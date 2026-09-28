@@ -1,0 +1,152 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum RefundStatus {
+  APPROVED
+  DENIED
+  ESCALATED
+}
+
+enum RefundReason {
+  DAMAGED
+  FAULTY
+  WRONG_ITEM
+  NOT_DELIVERED
+  MISSING_ITEM
+  OTHER
+}
+
+enum DecisionSource {
+  POLICY
+  AI
+  HUMAN
+}
+
+model Customer {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders         Order[]
+  refundRequests RefundRequest[]
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  sku         String   @unique
+  price       Decimal  @db.Decimal(10, 2)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orderItems OrderItem[]
+}
+
+model Order {
+  id          String      @id @default(uuid())
+  orderNumber String      @unique
+  customerId  String
+  status      OrderStatus
+  totalAmount Decimal     @db.Decimal(10, 2)
+  orderedAt   DateTime
+  deliveredAt DateTime?
+
+  customer       Customer        @relation(fields: [customerId], references: [id])
+  items          OrderItem[]
+  refundRequests RefundRequest[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OrderItem {
+  id        String  @id @default(uuid())
+  orderId   String
+  productId String
+  quantity  Int
+  unitPrice Decimal @db.Decimal(10, 2)
+  isFinalSale Boolean @default(false)
+
+  order   Order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+}
+
+model RefundRequest {
+  id          String       @id @default(uuid())
+  customerId  String
+  orderId     String
+  reason      RefundReason
+  description String
+  amount      Decimal      @db.Decimal(10, 2)
+   chatMessages ChatMessage[] 
+
+  customer Customer @relation(fields: [customerId], references: [id])
+  order    Order    @relation(fields: [orderId], references: [id])
+
+  decision  RefundDecision?
+  auditLogs AuditLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model RefundDecision {
+  id              String         @id @default(uuid())
+  refundRequestId String         @unique
+  status          RefundStatus
+  source          DecisionSource
+  reason          String
+  confidence      Float?
+
+  refundRequest RefundRequest @relation(fields: [refundRequestId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model ChatMessage {
+  id              String        @id @default(uuid())
+  refundRequestId String
+  role            String        // "user" | "assistant" | "system"
+  content         String
+  metadata        Json?
+  createdAt       DateTime      @default(now())
+
+  refundRequest RefundRequest @relation(fields: [refundRequestId], references: [id], onDelete: Cascade)
+}
+
+model AuditLog {
+  id              String  @id @default(uuid())
+  refundRequestId String
+  action          String
+  details         Json?
+
+  refundRequest RefundRequest @relation(fields: [refundRequestId], references: [id])
+
+  createdAt DateTime @default(now())
+}
