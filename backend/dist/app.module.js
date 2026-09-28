@@ -7,13 +7,22 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 import { Module } from "@nestjs/common";
 import { PrismaModule } from "./prisma/prisma.module.js";
 import { ConfigModule } from "@nestjs/config";
+import { AiModule } from "./ai/ai.module.js";
+import { ChatModule } from "./chat/chat.module.js";
+import { AdminModule } from "./admin/admin.module.js";
+import { CustomersModule } from "./customers/customers.module.js";
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
     Module({
-        imports: [ConfigModule.forRoot({ isGlobal: true }), PrismaModule],
-        controllers: [AppController],
-        providers: [AppService],
+        imports: [
+            ConfigModule.forRoot({ isGlobal: true }),
+            PrismaModule,
+            AiModule,
+            ChatModule,
+            AdminModule,
+            CustomersModule,
+        ],
     })
 ], AppModule);
 export { AppModule };

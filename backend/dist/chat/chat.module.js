@@ -4,16 +4,19 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { Global, Module } from "@nestjs/common";
-import { PrismaService } from "./prisma.service.js";
-let PrismaModule = class PrismaModule {
+import { Module } from "@nestjs/common";
+import { ChatService } from "../chat/chat.service.js";
+import { ChatController } from "../chat/chat.controller.js";
+import { AiModule } from "../ai/ai.module.js";
+let ChatModule = class ChatModule {
 };
-PrismaModule = __decorate([
-    Global(),
+ChatModule = __decorate([
     Module({
-        providers: [PrismaService],
-        exports: [PrismaService],
+        imports: [AiModule],
+        controllers: [ChatController],
+        providers: [ChatService],
+        exports: [ChatService],
     })
-], PrismaModule);
-export { PrismaModule };
-//# sourceMappingURL=prisma.module.js.map
+], ChatModule);
+export { ChatModule };
+//# sourceMappingURL=chat.module.js.map

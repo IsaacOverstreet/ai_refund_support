@@ -30,6 +30,7 @@ export const ModelName = {
     OrderItem: 'OrderItem',
     RefundRequest: 'RefundRequest',
     RefundDecision: 'RefundDecision',
+    ChatMessage: 'ChatMessage',
     AuditLog: 'AuditLog'
 };
 export const TransactionIsolationLevel = runtime.makeStrictEnum({
@@ -71,8 +72,7 @@ export const OrderItemScalarFieldEnum = {
     productId: 'productId',
     quantity: 'quantity',
     unitPrice: 'unitPrice',
-    size: 'size',
-    color: 'color'
+    isFinalSale: 'isFinalSale'
 };
 export const RefundRequestScalarFieldEnum = {
     id: 'id',
@@ -91,6 +91,14 @@ export const RefundDecisionScalarFieldEnum = {
     source: 'source',
     reason: 'reason',
     confidence: 'confidence',
+    createdAt: 'createdAt'
+};
+export const ChatMessageScalarFieldEnum = {
+    id: 'id',
+    refundRequestId: 'refundRequestId',
+    role: 'role',
+    content: 'content',
+    metadata: 'metadata',
     createdAt: 'createdAt'
 };
 export const AuditLogScalarFieldEnum = {

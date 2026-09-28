@@ -141,6 +141,7 @@ export type RefundRequestWhereInput = {
     amount?: Prisma.DecimalFilter<"RefundRequest"> | runtime.Decimal | runtime.DecimalJsLike | number | string;
     createdAt?: Prisma.DateTimeFilter<"RefundRequest"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"RefundRequest"> | Date | string;
+    chatMessages?: Prisma.ChatMessageListRelationFilter;
     customer?: Prisma.XOR<Prisma.CustomerScalarRelationFilter, Prisma.CustomerWhereInput>;
     order?: Prisma.XOR<Prisma.OrderScalarRelationFilter, Prisma.OrderWhereInput>;
     decision?: Prisma.XOR<Prisma.RefundDecisionNullableScalarRelationFilter, Prisma.RefundDecisionWhereInput> | null;
@@ -155,6 +156,7 @@ export type RefundRequestOrderByWithRelationInput = {
     amount?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
+    chatMessages?: Prisma.ChatMessageOrderByRelationAggregateInput;
     customer?: Prisma.CustomerOrderByWithRelationInput;
     order?: Prisma.OrderOrderByWithRelationInput;
     decision?: Prisma.RefundDecisionOrderByWithRelationInput;
@@ -172,6 +174,7 @@ export type RefundRequestWhereUniqueInput = Prisma.AtLeast<{
     amount?: Prisma.DecimalFilter<"RefundRequest"> | runtime.Decimal | runtime.DecimalJsLike | number | string;
     createdAt?: Prisma.DateTimeFilter<"RefundRequest"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"RefundRequest"> | Date | string;
+    chatMessages?: Prisma.ChatMessageListRelationFilter;
     customer?: Prisma.XOR<Prisma.CustomerScalarRelationFilter, Prisma.CustomerWhereInput>;
     order?: Prisma.XOR<Prisma.OrderScalarRelationFilter, Prisma.OrderWhereInput>;
     decision?: Prisma.XOR<Prisma.RefundDecisionNullableScalarRelationFilter, Prisma.RefundDecisionWhereInput> | null;
@@ -212,6 +215,7 @@ export type RefundRequestCreateInput = {
     amount: runtime.Decimal | runtime.DecimalJsLike | number | string;
     createdAt?: Date | string;
     updatedAt?: Date | string;
+    chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutRefundRequestInput;
     customer: Prisma.CustomerCreateNestedOneWithoutRefundRequestsInput;
     order: Prisma.OrderCreateNestedOneWithoutRefundRequestsInput;
     decision?: Prisma.RefundDecisionCreateNestedOneWithoutRefundRequestInput;
@@ -226,6 +230,7 @@ export type RefundRequestUncheckedCreateInput = {
     amount: runtime.Decimal | runtime.DecimalJsLike | number | string;
     createdAt?: Date | string;
     updatedAt?: Date | string;
+    chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutRefundRequestInput;
     decision?: Prisma.RefundDecisionUncheckedCreateNestedOneWithoutRefundRequestInput;
     auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutRefundRequestInput;
 };
@@ -236,6 +241,7 @@ export type RefundRequestUpdateInput = {
     amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    chatMessages?: Prisma.ChatMessageUpdateManyWithoutRefundRequestNestedInput;
     customer?: Prisma.CustomerUpdateOneRequiredWithoutRefundRequestsNestedInput;
     order?: Prisma.OrderUpdateOneRequiredWithoutRefundRequestsNestedInput;
     decision?: Prisma.RefundDecisionUpdateOneWithoutRefundRequestNestedInput;
@@ -250,6 +256,7 @@ export type RefundRequestUncheckedUpdateInput = {
     amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutRefundRequestNestedInput;
     decision?: Prisma.RefundDecisionUncheckedUpdateOneWithoutRefundRequestNestedInput;
     auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutRefundRequestNestedInput;
 };
@@ -420,6 +427,18 @@ export type RefundRequestUpdateOneRequiredWithoutDecisionNestedInput = {
     connect?: Prisma.RefundRequestWhereUniqueInput;
     update?: Prisma.XOR<Prisma.XOR<Prisma.RefundRequestUpdateToOneWithWhereWithoutDecisionInput, Prisma.RefundRequestUpdateWithoutDecisionInput>, Prisma.RefundRequestUncheckedUpdateWithoutDecisionInput>;
 };
+export type RefundRequestCreateNestedOneWithoutChatMessagesInput = {
+    create?: Prisma.XOR<Prisma.RefundRequestCreateWithoutChatMessagesInput, Prisma.RefundRequestUncheckedCreateWithoutChatMessagesInput>;
+    connectOrCreate?: Prisma.RefundRequestCreateOrConnectWithoutChatMessagesInput;
+    connect?: Prisma.RefundRequestWhereUniqueInput;
+};
+export type RefundRequestUpdateOneRequiredWithoutChatMessagesNestedInput = {
+    create?: Prisma.XOR<Prisma.RefundRequestCreateWithoutChatMessagesInput, Prisma.RefundRequestUncheckedCreateWithoutChatMessagesInput>;
+    connectOrCreate?: Prisma.RefundRequestCreateOrConnectWithoutChatMessagesInput;
+    upsert?: Prisma.RefundRequestUpsertWithoutChatMessagesInput;
+    connect?: Prisma.RefundRequestWhereUniqueInput;
+    update?: Prisma.XOR<Prisma.XOR<Prisma.RefundRequestUpdateToOneWithWhereWithoutChatMessagesInput, Prisma.RefundRequestUpdateWithoutChatMessagesInput>, Prisma.RefundRequestUncheckedUpdateWithoutChatMessagesInput>;
+};
 export type RefundRequestCreateNestedOneWithoutAuditLogsInput = {
     create?: Prisma.XOR<Prisma.RefundRequestCreateWithoutAuditLogsInput, Prisma.RefundRequestUncheckedCreateWithoutAuditLogsInput>;
     connectOrCreate?: Prisma.RefundRequestCreateOrConnectWithoutAuditLogsInput;
@@ -439,6 +458,7 @@ export type RefundRequestCreateWithoutCustomerInput = {
     amount: runtime.Decimal | runtime.DecimalJsLike | number | string;
     createdAt?: Date | string;
     updatedAt?: Date | string;
+    chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutRefundRequestInput;
     order: Prisma.OrderCreateNestedOneWithoutRefundRequestsInput;
     decision?: Prisma.RefundDecisionCreateNestedOneWithoutRefundRequestInput;
     auditLogs?: Prisma.AuditLogCreateNestedManyWithoutRefundRequestInput;
@@ -451,6 +471,7 @@ export type RefundRequestUncheckedCreateWithoutCustomerInput = {
     amount: runtime.Decimal | runtime.DecimalJsLike | number | string;
     createdAt?: Date | string;
     updatedAt?: Date | string;
+    chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutRefundRequestInput;
     decision?: Prisma.RefundDecisionUncheckedCreateNestedOneWithoutRefundRequestInput;
     auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutRefundRequestInput;
 };
@@ -495,6 +516,7 @@ export type RefundRequestCreateWithoutOrderInput = {
     amount: runtime.Decimal | runtime.DecimalJsLike | number | string;
     createdAt?: Date | string;
     updatedAt?: Date | string;
+    chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutRefundRequestInput;
     customer: Prisma.CustomerCreateNestedOneWithoutRefundRequestsInput;
     decision?: Prisma.RefundDecisionCreateNestedOneWithoutRefundRequestInput;
     auditLogs?: Prisma.AuditLogCreateNestedManyWithoutRefundRequestInput;
@@ -507,6 +529,7 @@ export type RefundRequestUncheckedCreateWithoutOrderInput = {
     amount: runtime.Decimal | runtime.DecimalJsLike | number | string;
     createdAt?: Date | string;
     updatedAt?: Date | string;
+    chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutRefundRequestInput;
     decision?: Prisma.RefundDecisionUncheckedCreateNestedOneWithoutRefundRequestInput;
     auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutRefundRequestInput;
 };
@@ -538,6 +561,7 @@ export type RefundRequestCreateWithoutDecisionInput = {
     amount: runtime.Decimal | runtime.DecimalJsLike | number | string;
     createdAt?: Date | string;
     updatedAt?: Date | string;
+    chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutRefundRequestInput;
     customer: Prisma.CustomerCreateNestedOneWithoutRefundRequestsInput;
     order: Prisma.OrderCreateNestedOneWithoutRefundRequestsInput;
     auditLogs?: Prisma.AuditLogCreateNestedManyWithoutRefundRequestInput;
@@ -551,6 +575,7 @@ export type RefundRequestUncheckedCreateWithoutDecisionInput = {
     amount: runtime.Decimal | runtime.DecimalJsLike | number | string;
     createdAt?: Date | string;
     updatedAt?: Date | string;
+    chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutRefundRequestInput;
     auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutRefundRequestInput;
 };
 export type RefundRequestCreateOrConnectWithoutDecisionInput = {
@@ -573,6 +598,7 @@ export type RefundRequestUpdateWithoutDecisionInput = {
     amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    chatMessages?: Prisma.ChatMessageUpdateManyWithoutRefundRequestNestedInput;
     customer?: Prisma.CustomerUpdateOneRequiredWithoutRefundRequestsNestedInput;
     order?: Prisma.OrderUpdateOneRequiredWithoutRefundRequestsNestedInput;
     auditLogs?: Prisma.AuditLogUpdateManyWithoutRefundRequestNestedInput;
@@ -586,6 +612,68 @@ export type RefundRequestUncheckedUpdateWithoutDecisionInput = {
     amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutRefundRequestNestedInput;
+    auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutRefundRequestNestedInput;
+};
+export type RefundRequestCreateWithoutChatMessagesInput = {
+    id?: string;
+    reason: $Enums.RefundReason;
+    description: string;
+    amount: runtime.Decimal | runtime.DecimalJsLike | number | string;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    customer: Prisma.CustomerCreateNestedOneWithoutRefundRequestsInput;
+    order: Prisma.OrderCreateNestedOneWithoutRefundRequestsInput;
+    decision?: Prisma.RefundDecisionCreateNestedOneWithoutRefundRequestInput;
+    auditLogs?: Prisma.AuditLogCreateNestedManyWithoutRefundRequestInput;
+};
+export type RefundRequestUncheckedCreateWithoutChatMessagesInput = {
+    id?: string;
+    customerId: string;
+    orderId: string;
+    reason: $Enums.RefundReason;
+    description: string;
+    amount: runtime.Decimal | runtime.DecimalJsLike | number | string;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    decision?: Prisma.RefundDecisionUncheckedCreateNestedOneWithoutRefundRequestInput;
+    auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutRefundRequestInput;
+};
+export type RefundRequestCreateOrConnectWithoutChatMessagesInput = {
+    where: Prisma.RefundRequestWhereUniqueInput;
+    create: Prisma.XOR<Prisma.RefundRequestCreateWithoutChatMessagesInput, Prisma.RefundRequestUncheckedCreateWithoutChatMessagesInput>;
+};
+export type RefundRequestUpsertWithoutChatMessagesInput = {
+    update: Prisma.XOR<Prisma.RefundRequestUpdateWithoutChatMessagesInput, Prisma.RefundRequestUncheckedUpdateWithoutChatMessagesInput>;
+    create: Prisma.XOR<Prisma.RefundRequestCreateWithoutChatMessagesInput, Prisma.RefundRequestUncheckedCreateWithoutChatMessagesInput>;
+    where?: Prisma.RefundRequestWhereInput;
+};
+export type RefundRequestUpdateToOneWithWhereWithoutChatMessagesInput = {
+    where?: Prisma.RefundRequestWhereInput;
+    data: Prisma.XOR<Prisma.RefundRequestUpdateWithoutChatMessagesInput, Prisma.RefundRequestUncheckedUpdateWithoutChatMessagesInput>;
+};
+export type RefundRequestUpdateWithoutChatMessagesInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    reason?: Prisma.EnumRefundReasonFieldUpdateOperationsInput | $Enums.RefundReason;
+    description?: Prisma.StringFieldUpdateOperationsInput | string;
+    amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    customer?: Prisma.CustomerUpdateOneRequiredWithoutRefundRequestsNestedInput;
+    order?: Prisma.OrderUpdateOneRequiredWithoutRefundRequestsNestedInput;
+    decision?: Prisma.RefundDecisionUpdateOneWithoutRefundRequestNestedInput;
+    auditLogs?: Prisma.AuditLogUpdateManyWithoutRefundRequestNestedInput;
+};
+export type RefundRequestUncheckedUpdateWithoutChatMessagesInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    customerId?: Prisma.StringFieldUpdateOperationsInput | string;
+    orderId?: Prisma.StringFieldUpdateOperationsInput | string;
+    reason?: Prisma.EnumRefundReasonFieldUpdateOperationsInput | $Enums.RefundReason;
+    description?: Prisma.StringFieldUpdateOperationsInput | string;
+    amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    decision?: Prisma.RefundDecisionUncheckedUpdateOneWithoutRefundRequestNestedInput;
     auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutRefundRequestNestedInput;
 };
 export type RefundRequestCreateWithoutAuditLogsInput = {
@@ -595,6 +683,7 @@ export type RefundRequestCreateWithoutAuditLogsInput = {
     amount: runtime.Decimal | runtime.DecimalJsLike | number | string;
     createdAt?: Date | string;
     updatedAt?: Date | string;
+    chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutRefundRequestInput;
     customer: Prisma.CustomerCreateNestedOneWithoutRefundRequestsInput;
     order: Prisma.OrderCreateNestedOneWithoutRefundRequestsInput;
     decision?: Prisma.RefundDecisionCreateNestedOneWithoutRefundRequestInput;
@@ -608,6 +697,7 @@ export type RefundRequestUncheckedCreateWithoutAuditLogsInput = {
     amount: runtime.Decimal | runtime.DecimalJsLike | number | string;
     createdAt?: Date | string;
     updatedAt?: Date | string;
+    chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutRefundRequestInput;
     decision?: Prisma.RefundDecisionUncheckedCreateNestedOneWithoutRefundRequestInput;
 };
 export type RefundRequestCreateOrConnectWithoutAuditLogsInput = {
@@ -630,6 +720,7 @@ export type RefundRequestUpdateWithoutAuditLogsInput = {
     amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    chatMessages?: Prisma.ChatMessageUpdateManyWithoutRefundRequestNestedInput;
     customer?: Prisma.CustomerUpdateOneRequiredWithoutRefundRequestsNestedInput;
     order?: Prisma.OrderUpdateOneRequiredWithoutRefundRequestsNestedInput;
     decision?: Prisma.RefundDecisionUpdateOneWithoutRefundRequestNestedInput;
@@ -643,6 +734,7 @@ export type RefundRequestUncheckedUpdateWithoutAuditLogsInput = {
     amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutRefundRequestNestedInput;
     decision?: Prisma.RefundDecisionUncheckedUpdateOneWithoutRefundRequestNestedInput;
 };
 export type RefundRequestCreateManyCustomerInput = {
@@ -661,6 +753,7 @@ export type RefundRequestUpdateWithoutCustomerInput = {
     amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    chatMessages?: Prisma.ChatMessageUpdateManyWithoutRefundRequestNestedInput;
     order?: Prisma.OrderUpdateOneRequiredWithoutRefundRequestsNestedInput;
     decision?: Prisma.RefundDecisionUpdateOneWithoutRefundRequestNestedInput;
     auditLogs?: Prisma.AuditLogUpdateManyWithoutRefundRequestNestedInput;
@@ -673,6 +766,7 @@ export type RefundRequestUncheckedUpdateWithoutCustomerInput = {
     amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutRefundRequestNestedInput;
     decision?: Prisma.RefundDecisionUncheckedUpdateOneWithoutRefundRequestNestedInput;
     auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutRefundRequestNestedInput;
 };
@@ -701,6 +795,7 @@ export type RefundRequestUpdateWithoutOrderInput = {
     amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    chatMessages?: Prisma.ChatMessageUpdateManyWithoutRefundRequestNestedInput;
     customer?: Prisma.CustomerUpdateOneRequiredWithoutRefundRequestsNestedInput;
     decision?: Prisma.RefundDecisionUpdateOneWithoutRefundRequestNestedInput;
     auditLogs?: Prisma.AuditLogUpdateManyWithoutRefundRequestNestedInput;
@@ -713,6 +808,7 @@ export type RefundRequestUncheckedUpdateWithoutOrderInput = {
     amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutRefundRequestNestedInput;
     decision?: Prisma.RefundDecisionUncheckedUpdateOneWithoutRefundRequestNestedInput;
     auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutRefundRequestNestedInput;
 };
@@ -726,13 +822,18 @@ export type RefundRequestUncheckedUpdateManyWithoutOrderInput = {
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 export type RefundRequestCountOutputType = {
+    chatMessages: number;
     auditLogs: number;
 };
 export type RefundRequestCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    chatMessages?: boolean | RefundRequestCountOutputTypeCountChatMessagesArgs;
     auditLogs?: boolean | RefundRequestCountOutputTypeCountAuditLogsArgs;
 };
 export type RefundRequestCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     select?: Prisma.RefundRequestCountOutputTypeSelect<ExtArgs> | null;
+};
+export type RefundRequestCountOutputTypeCountChatMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.ChatMessageWhereInput;
 };
 export type RefundRequestCountOutputTypeCountAuditLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     where?: Prisma.AuditLogWhereInput;
@@ -746,6 +847,7 @@ export type RefundRequestSelect<ExtArgs extends runtime.Types.Extensions.Interna
     amount?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
+    chatMessages?: boolean | Prisma.RefundRequest$chatMessagesArgs<ExtArgs>;
     customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>;
     order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>;
     decision?: boolean | Prisma.RefundRequest$decisionArgs<ExtArgs>;
@@ -788,6 +890,7 @@ export type RefundRequestSelectScalar = {
 };
 export type RefundRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "customerId" | "orderId" | "reason" | "description" | "amount" | "createdAt" | "updatedAt", ExtArgs["result"]["refundRequest"]>;
 export type RefundRequestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    chatMessages?: boolean | Prisma.RefundRequest$chatMessagesArgs<ExtArgs>;
     customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>;
     order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>;
     decision?: boolean | Prisma.RefundRequest$decisionArgs<ExtArgs>;
@@ -805,6 +908,7 @@ export type RefundRequestIncludeUpdateManyAndReturn<ExtArgs extends runtime.Type
 export type $RefundRequestPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     name: "RefundRequest";
     objects: {
+        chatMessages: Prisma.$ChatMessagePayload<ExtArgs>[];
         customer: Prisma.$CustomerPayload<ExtArgs>;
         order: Prisma.$OrderPayload<ExtArgs>;
         decision: Prisma.$RefundDecisionPayload<ExtArgs> | null;
@@ -871,6 +975,7 @@ export interface RefundRequestDelegate<ExtArgs extends runtime.Types.Extensions.
 }
 export interface Prisma__RefundRequestClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise";
+    chatMessages<T extends Prisma.RefundRequest$chatMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RefundRequest$chatMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
     customer<T extends Prisma.CustomerDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CustomerDefaultArgs<ExtArgs>>): Prisma.Prisma__CustomerClient<runtime.Types.Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>;
     order<T extends Prisma.OrderDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrderDefaultArgs<ExtArgs>>): Prisma.Prisma__OrderClient<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>;
     decision<T extends Prisma.RefundRequest$decisionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RefundRequest$decisionArgs<ExtArgs>>): Prisma.Prisma__RefundDecisionClient<runtime.Types.Result.GetResult<Prisma.$RefundDecisionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
@@ -988,6 +1093,17 @@ export type RefundRequestDeleteArgs<ExtArgs extends runtime.Types.Extensions.Int
 export type RefundRequestDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     where?: Prisma.RefundRequestWhereInput;
     limit?: number;
+};
+export type RefundRequest$chatMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    select?: Prisma.ChatMessageSelect<ExtArgs> | null;
+    omit?: Prisma.ChatMessageOmit<ExtArgs> | null;
+    include?: Prisma.ChatMessageInclude<ExtArgs> | null;
+    where?: Prisma.ChatMessageWhereInput;
+    orderBy?: Prisma.ChatMessageOrderByWithRelationInput | Prisma.ChatMessageOrderByWithRelationInput[];
+    cursor?: Prisma.ChatMessageWhereUniqueInput;
+    take?: number;
+    skip?: number;
+    distinct?: Prisma.ChatMessageScalarFieldEnum | Prisma.ChatMessageScalarFieldEnum[];
 };
 export type RefundRequest$decisionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     select?: Prisma.RefundDecisionSelect<ExtArgs> | null;

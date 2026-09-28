@@ -17,6 +17,7 @@ export declare const ModelName: {
     readonly OrderItem: "OrderItem";
     readonly RefundRequest: "RefundRequest";
     readonly RefundDecision: "RefundDecision";
+    readonly ChatMessage: "ChatMessage";
     readonly AuditLog: "AuditLog";
 };
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
@@ -63,8 +64,7 @@ export declare const OrderItemScalarFieldEnum: {
     readonly productId: "productId";
     readonly quantity: "quantity";
     readonly unitPrice: "unitPrice";
-    readonly size: "size";
-    readonly color: "color";
+    readonly isFinalSale: "isFinalSale";
 };
 export type OrderItemScalarFieldEnum = (typeof OrderItemScalarFieldEnum)[keyof typeof OrderItemScalarFieldEnum];
 export declare const RefundRequestScalarFieldEnum: {
@@ -88,6 +88,15 @@ export declare const RefundDecisionScalarFieldEnum: {
     readonly createdAt: "createdAt";
 };
 export type RefundDecisionScalarFieldEnum = (typeof RefundDecisionScalarFieldEnum)[keyof typeof RefundDecisionScalarFieldEnum];
+export declare const ChatMessageScalarFieldEnum: {
+    readonly id: "id";
+    readonly refundRequestId: "refundRequestId";
+    readonly role: "role";
+    readonly content: "content";
+    readonly metadata: "metadata";
+    readonly createdAt: "createdAt";
+};
+export type ChatMessageScalarFieldEnum = (typeof ChatMessageScalarFieldEnum)[keyof typeof ChatMessageScalarFieldEnum];
 export declare const AuditLogScalarFieldEnum: {
     readonly id: "id";
     readonly refundRequestId: "refundRequestId";

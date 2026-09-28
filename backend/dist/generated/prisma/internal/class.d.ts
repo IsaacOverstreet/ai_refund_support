@@ -48,6 +48,9 @@ export interface PrismaClient<in LogOpts extends Prisma.LogLevel = never, in out
     get refundDecision(): Prisma.RefundDecisionDelegate<ExtArgs, {
         omit: OmitOpts;
     }>;
+    get chatMessage(): Prisma.ChatMessageDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
     get auditLog(): Prisma.AuditLogDelegate<ExtArgs, {
         omit: OmitOpts;
     }>;

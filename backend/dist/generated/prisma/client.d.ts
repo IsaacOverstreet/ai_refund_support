@@ -12,4 +12,5 @@ export type Order = Prisma.OrderModel;
 export type OrderItem = Prisma.OrderItemModel;
 export type RefundRequest = Prisma.RefundRequestModel;
 export type RefundDecision = Prisma.RefundDecisionModel;
+export type ChatMessage = Prisma.ChatMessageModel;
 export type AuditLog = Prisma.AuditLogModel;

@@ -1,4 +1,4 @@
-import { PolicyCheck } from "../policy/refund-policy.js";
+import { PolicyCheck } from "../policy/refundPolicy.js";
 type ConversationMessage = {
     role: "user" | "assistant";
     content: string;

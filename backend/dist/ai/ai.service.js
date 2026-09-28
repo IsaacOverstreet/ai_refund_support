@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var AiService_1;
 import { Injectable, Logger } from "@nestjs/common";
 import OpenAI from "openai";
-import { REFUND_POLICY } from "../policy/refund-policy.js";
+import { REFUND_POLICY } from "../policy/refundPolicy.js";
 let AiService = AiService_1 = class AiService {
     logger = new Logger(AiService_1.name);
     openai;
