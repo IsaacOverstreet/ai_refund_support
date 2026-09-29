@@ -1,8 +1,9 @@
 import { Body, Controller, Get, Param, Patch, Query } from "@nestjs/common";
-import { IsIn, IsString, MinLength } from "class-validator";
+import { IsIn, IsOptional, IsString, MinLength } from "class-validator";
 import { AdminService } from "./admin.service.js";
 
 class RequestFilterDto {
+  @IsOptional()
   @IsIn(["APPROVED", "DENIED", "ESCALATED"])
   status?: "APPROVED" | "DENIED" | "ESCALATED";
 }

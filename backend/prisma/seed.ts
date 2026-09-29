@@ -24,6 +24,13 @@ const productCatalog = [
   { name: "Phone Case", sku: "PC-013", price: 19.99 },
   { name: "Tablet Stand", sku: "TS-014", price: 34.0 },
   { name: "Electric Toothbrush", sku: "ET-015", price: 89.0 },
+
+  // Products above $500 for human-review testing.
+  { name: "Premium Laptop", sku: "PL-016", price: 1299.99 },
+  { name: "Professional Camera", sku: "PC-017", price: 899.99 },
+  { name: "Gaming PC", sku: "GPC-018", price: 1499.99 },
+  { name: "4K OLED TV", sku: "TV-019", price: 799.99 },
+  { name: "MacBook Pro", sku: "MBP-020", price: 1899.99 },
 ];
 
 const customers = [
@@ -88,7 +95,9 @@ async function main() {
     const orderCount = randomBetween(2, 3);
 
     for (let i = 0; i < orderCount; i++) {
-      const daysAgo = randomBetween(1, 90);
+      // First order is obviously older than 30 days.
+      // Other orders are within the refund window.
+      const daysAgo = i === 0 ? 90 : randomBetween(1, 30);
 
       const orderedAt = new Date();
       orderedAt.setDate(orderedAt.getDate() - daysAgo);
@@ -105,7 +114,8 @@ async function main() {
       let total = 0;
 
       const itemsData = pickedProducts.map((product) => {
-        const quantity = randomBetween(1, 2);
+        // Every product has quantity 1.
+        const quantity = 1;
         const unitPrice = Number(product.price);
 
         total += quantity * unitPrice;
@@ -114,6 +124,8 @@ async function main() {
           productId: product.id,
           quantity,
           unitPrice,
+
+          // Some items are final sale for testing.
           isFinalSale: Math.random() < 0.15,
         };
       });

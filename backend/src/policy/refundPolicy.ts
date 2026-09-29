@@ -6,7 +6,7 @@ export const REFUND_POLICY = {
     "Final sale items are not eligible for refunds.",
     "Orders older than 30 days cannot be refunded.",
     "Refunds above $500 require human review.",
-    "Damaged or incorrect items may qualify for approval.",
+    "Damaged or incorrect items may qualify for a refund after the item is returned and verified.",
     "Suspicious or conflicting requests should be escalated.",
   ],
 };
@@ -43,7 +43,7 @@ export function evaluatePolicy(input: RefundPolicyInput): PolicyEvaluation {
     passed: refundAmountIsValid,
     reason: refundAmountIsValid
       ? "Refund amount is valid."
-      : "Refund must be greater than $0 and cannot exceed the item value.",
+      : "Refund must be greater than $0 and cannot exceed the item's value.",
     severity: "hard",
   });
 
@@ -61,6 +61,7 @@ export function evaluatePolicy(input: RefundPolicyInput): PolicyEvaluation {
 
   // 3. Refund window
   const MS_PER_DAY = 1000 * 60 * 60 * 24;
+
   const orderAgeInDays = Math.floor(
     (Date.now() - input.orderedAt.getTime()) / MS_PER_DAY,
   );
@@ -77,12 +78,12 @@ export function evaluatePolicy(input: RefundPolicyInput): PolicyEvaluation {
     severity: "hard",
   });
 
-  // 4. Refund amount requiring human review
+  // 4. Automatic approval limit
   const requiresEscalation =
     input.refundAmount > REFUND_POLICY.maxAmountWithoutReview;
 
   checks.push({
-    rule: "amount_cap",
+    rule: "human_review_limit",
     passed: !requiresEscalation,
     reason: requiresEscalation
       ? `Refund exceeds $${REFUND_POLICY.maxAmountWithoutReview} and requires human review.`
@@ -90,6 +91,7 @@ export function evaluatePolicy(input: RefundPolicyInput): PolicyEvaluation {
     severity: "soft",
   });
 
+  // A hard policy failure means the refund cannot be approved automatically.
   const hardFail = checks.some(
     (check) => check.severity === "hard" && !check.passed,
   );

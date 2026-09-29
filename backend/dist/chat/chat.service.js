@@ -11,8 +11,8 @@ import { BadRequestException, Injectable, NotFoundException, } from "@nestjs/com
 import { PrismaService } from "../prisma/prisma.service.js";
 import { AiService } from "../ai/ai.service.js";
 import { evaluatePolicy } from "../policy/refundPolicy.js";
-const HARDCODED_INTRO = (customerName, orderNumber, totalAmount) => `Hi ${customerName}! 👋 I'm your WORKNOON refund assistant.\n\n` +
-    `I can see your order **${orderNumber}** for a total of **$${totalAmount.toFixed(2)}**.\n\n` +
+const HARDCODED_INTRO = (customerName, orderNumber, totalAmount) => `Hi ${customerName}! I'm your WORKNOON refund assistant.\n\n` +
+    `I can see your order ${orderNumber} for a total of $${totalAmount.toFixed(2)}.\n\n` +
     `To get started, could you tell me what went wrong? For example:\n` +
     `• The item arrived damaged\n` +
     `• I received the wrong item\n` +
@@ -119,29 +119,82 @@ let ChatService = class ChatService {
                 content: userMessage,
             },
         });
-        const item = request.order.items[0];
-        const policy = evaluatePolicy({
-            refundAmount: Number(request.amount),
-            itemAmount: Number(item.unitPrice),
-            orderedAt: request.order.orderedAt,
-            isFinalSale: item.isFinalSale,
-        });
         const injection = this.ai.detectInjection(userMessage);
-        const aiResult = await this.ai.evaluate({
+        const productResult = await this.ai.identifyProduct({
             customerMessage: userMessage,
-            conversationHistory: request.chatMessages.map((message) => ({
+            conversationHistory: [
+                ...request.chatMessages,
+                {
+                    role: "user",
+                    content: userMessage,
+                },
+            ].map((message) => ({
                 role: message.role,
                 content: message.content,
             })),
-            refundAmount: Number(request.amount),
             order: {
                 orderNumber: request.order.orderNumber,
-                totalAmount: Number(request.order.totalAmount),
-                orderedAt: request.order.orderedAt,
                 items: request.order.items.map((item) => ({
                     productName: item.product.name,
                     quantity: item.quantity,
                     isFinalSale: item.isFinalSale,
+                })),
+            },
+        });
+        const item = productResult.productName
+            ? request.order.items.find((orderItem) => orderItem.product.name.toLowerCase() ===
+                productResult.productName.toLowerCase())
+            : undefined;
+        if (!item) {
+            const assistantMessage = await this.prisma.chatMessage.create({
+                data: {
+                    refundRequestId: sessionId,
+                    role: "assistant",
+                    content: "I couldn't identify which product you're requesting a refund for. " +
+                        "Could you please tell me the product name?",
+                    metadata: {
+                        type: "clarification",
+                        injectionSuspected: injection.suspicious,
+                    },
+                },
+            });
+            return {
+                message: assistantMessage,
+                decision: null,
+                reasoning: null,
+                policyChecks: [],
+                injectionSuspected: injection.suspicious,
+            };
+        }
+        const itemRefundAmount = Number(item.unitPrice) * item.quantity;
+        const policy = evaluatePolicy({
+            refundAmount: itemRefundAmount,
+            itemAmount: itemRefundAmount,
+            orderedAt: request.order.orderedAt,
+            isFinalSale: item.isFinalSale,
+        });
+        const aiResult = await this.ai.evaluate({
+            customerMessage: userMessage,
+            conversationHistory: [
+                ...request.chatMessages,
+                {
+                    role: "user",
+                    content: userMessage,
+                },
+            ].map((message) => ({
+                role: message.role,
+                content: message.content,
+            })),
+            refundAmount: itemRefundAmount,
+            productName: item.product.name,
+            order: {
+                orderNumber: request.order.orderNumber,
+                totalAmount: Number(request.order.totalAmount),
+                orderedAt: request.order.orderedAt,
+                items: request.order.items.map((orderItem) => ({
+                    productName: orderItem.product.name,
+                    quantity: orderItem.quantity,
+                    isFinalSale: orderItem.isFinalSale,
                 })),
             },
             policyChecks: policy.checks,
@@ -151,23 +204,47 @@ let ChatService = class ChatService {
         });
         let finalDecision = aiResult.decision.toUpperCase();
         let decisionSource = "AI";
+        let finalReply = aiResult.reply;
+        let finalReasoning = aiResult.reasoning;
         if (policy.hardFail) {
             finalDecision = "DENIED";
             decisionSource = "POLICY";
+            const failedCheck = policy.checks.find((check) => !check.passed && check.severity === "hard");
+            finalReasoning =
+                failedCheck?.reason ?? "This item does not qualify for a refund.";
+            finalReply =
+                `I'm sorry, but this item doesn't qualify for a refund. ` +
+                    `${finalReasoning} ` +
+                    `If you believe this is a mistake, please contact our support team.`;
         }
         else if (injection.suspicious || policy.requiresEscalation) {
             finalDecision = "ESCALATED";
             decisionSource = "POLICY";
+            if (injection.suspicious) {
+                finalReasoning =
+                    "The request contained content that requires human review.";
+            }
+            else {
+                finalReasoning =
+                    "The refund amount exceeds the automatic approval limit and requires human review.";
+            }
+            finalReply =
+                `Your refund request for ${item.product.name} requires human review. ` +
+                    `A support representative will review the request and determine the next step.`;
         }
         const assistantMessage = await this.prisma.chatMessage.create({
             data: {
                 refundRequestId: sessionId,
                 role: "assistant",
-                content: aiResult.reply,
+                content: finalReply,
                 metadata: {
                     decision: finalDecision,
-                    reasoning: aiResult.reasoning,
+                    reasoning: finalReasoning,
                     policyChecks: policy.checks,
+                    productName: item.product.name,
+                    itemPrice: Number(item.unitPrice),
+                    itemQuantity: item.quantity,
+                    refundAmount: itemRefundAmount,
                     injectionSuspected: injection.suspicious,
                 },
             },
@@ -177,7 +254,7 @@ let ChatService = class ChatService {
                 refundRequestId: sessionId,
                 status: finalDecision,
                 source: decisionSource,
-                reason: aiResult.reasoning,
+                reason: finalReasoning,
                 confidence: injection.suspicious ? 0.5 : 0.9,
             },
         });
@@ -187,8 +264,12 @@ let ChatService = class ChatService {
                 action: `decision_${finalDecision.toLowerCase()}`,
                 details: {
                     policyChecks: policy.checks,
+                    productName: item.product.name,
+                    itemPrice: Number(item.unitPrice),
+                    itemQuantity: item.quantity,
+                    refundAmount: itemRefundAmount,
                     injectionSuspected: injection.suspicious,
-                    reasoning: aiResult.reasoning,
+                    reasoning: finalReasoning,
                     decisionSource,
                 },
             },
@@ -196,7 +277,7 @@ let ChatService = class ChatService {
         return {
             message: assistantMessage,
             decision: decisionRecord.status,
-            reasoning: aiResult.reasoning,
+            reasoning: finalReasoning,
             policyChecks: policy.checks,
             injectionSuspected: injection.suspicious,
         };

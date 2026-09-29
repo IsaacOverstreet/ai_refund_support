@@ -25,19 +25,25 @@ export declare class ChatService {
             role: string;
             content: string;
         };
+        decision: null;
+        reasoning: null;
+        policyChecks: never[];
+        injectionSuspected: boolean;
+    } | {
+        message: {
+            id: string;
+            metadata: import("@prisma/client/runtime/client").JsonValue | null;
+            createdAt: Date;
+            refundRequestId: string;
+            role: string;
+            content: string;
+        };
         decision: import("../generated/prisma/enums.js").RefundStatus;
         reasoning: string;
         policyChecks: import("../policy/refundPolicy.js").PolicyCheck[];
         injectionSuspected: boolean;
     }>;
     listSessions(): Promise<({
-        customer: {
-            name: string;
-            id: string;
-            createdAt: Date;
-            updatedAt: Date;
-            email: string;
-        };
         order: {
             items: ({
                 product: {
@@ -77,6 +83,13 @@ export declare class ChatService {
             reason: string;
             confidence: number | null;
         } | null;
+        customer: {
+            name: string;
+            id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            email: string;
+        };
         chatMessages: {
             id: string;
             metadata: import("@prisma/client/runtime/client").JsonValue | null;

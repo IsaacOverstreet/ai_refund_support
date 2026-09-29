@@ -7,44 +7,6 @@ export declare class ChatController {
     private chat;
     private prisma;
     constructor(chat: ChatService, prisma: PrismaService);
-    getCustomers(): import("../generated/prisma/internal/prismaNamespace.js").PrismaPromise<({
-        orders: ({
-            items: ({
-                product: {
-                    name: string;
-                    id: string;
-                    createdAt: Date;
-                    updatedAt: Date;
-                    description: string | null;
-                    sku: string;
-                    price: import("@prisma/client-runtime-utils").Decimal;
-                };
-            } & {
-                id: string;
-                orderId: string;
-                productId: string;
-                quantity: number;
-                unitPrice: import("@prisma/client-runtime-utils").Decimal;
-                isFinalSale: boolean;
-            })[];
-        } & {
-            id: string;
-            orderNumber: string;
-            customerId: string;
-            status: import("../generated/prisma/enums.js").OrderStatus;
-            totalAmount: import("@prisma/client-runtime-utils").Decimal;
-            orderedAt: Date;
-            deliveredAt: Date | null;
-            createdAt: Date;
-            updatedAt: Date;
-        })[];
-    } & {
-        name: string;
-        id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        email: string;
-    })[]>;
     start(orderId: string): Promise<{
         sessionId: string;
         orderId: string;
@@ -66,19 +28,25 @@ export declare class ChatController {
             role: string;
             content: string;
         };
+        decision: null;
+        reasoning: null;
+        policyChecks: never[];
+        injectionSuspected: boolean;
+    } | {
+        message: {
+            id: string;
+            metadata: import("@prisma/client/runtime/client").JsonValue | null;
+            createdAt: Date;
+            refundRequestId: string;
+            role: string;
+            content: string;
+        };
         decision: import("../generated/prisma/enums.js").RefundStatus;
         reasoning: string;
         policyChecks: import("../policy/refundPolicy.js").PolicyCheck[];
         injectionSuspected: boolean;
     }>;
     list(): Promise<({
-        customer: {
-            name: string;
-            id: string;
-            createdAt: Date;
-            updatedAt: Date;
-            email: string;
-        };
         order: {
             items: ({
                 product: {
@@ -118,6 +86,13 @@ export declare class ChatController {
             reason: string;
             confidence: number | null;
         } | null;
+        customer: {
+            name: string;
+            id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            email: string;
+        };
         chatMessages: {
             id: string;
             metadata: import("@prisma/client/runtime/client").JsonValue | null;

@@ -16,17 +16,17 @@ export class ChatController {
     private prisma: PrismaService,
   ) {}
 
-  @Get("customers")
-  getCustomers() {
-    return this.prisma.customer.findMany({
-      include: {
-        orders: {
-          include: { items: { include: { product: true } } },
-          orderBy: { orderedAt: "desc" },
-        },
-      },
-    });
-  }
+  //   @Get("customers")
+  //   getCustomers() {
+  //     return this.prisma.customer.findMany({
+  //       include: {
+  //         orders: {
+  //           include: { items: { include: { product: true } } },
+  //           orderBy: { orderedAt: "desc" },
+  //         },
+  //       },
+  //     });
+  //   }
 
   @Post("sessions/start/:orderId")
   start(@Param("orderId") orderId: string) {

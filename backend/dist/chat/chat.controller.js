@@ -29,16 +29,6 @@ let ChatController = class ChatController {
         this.chat = chat;
         this.prisma = prisma;
     }
-    getCustomers() {
-        return this.prisma.customer.findMany({
-            include: {
-                orders: {
-                    include: { items: { include: { product: true } } },
-                    orderBy: { orderedAt: "desc" },
-                },
-            },
-        });
-    }
     start(orderId) {
         return this.chat.startSession(orderId);
     }
@@ -49,12 +39,6 @@ let ChatController = class ChatController {
         return this.chat.listSessions();
     }
 };
-__decorate([
-    Get("customers"),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], ChatController.prototype, "getCustomers", null);
 __decorate([
     Post("sessions/start/:orderId"),
     __param(0, Param("orderId")),

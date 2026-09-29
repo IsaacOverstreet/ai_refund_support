@@ -5,7 +5,7 @@ export const REFUND_POLICY = {
         "Final sale items are not eligible for refunds.",
         "Orders older than 30 days cannot be refunded.",
         "Refunds above $500 require human review.",
-        "Damaged or incorrect items may qualify for approval.",
+        "Damaged or incorrect items may qualify for a refund after the item is returned and verified.",
         "Suspicious or conflicting requests should be escalated.",
     ],
 };
@@ -17,7 +17,7 @@ export function evaluatePolicy(input) {
         passed: refundAmountIsValid,
         reason: refundAmountIsValid
             ? "Refund amount is valid."
-            : "Refund must be greater than $0 and cannot exceed the item value.",
+            : "Refund must be greater than $0 and cannot exceed the item's value.",
         severity: "hard",
     });
     const isEligibleForRefund = !input.isFinalSale;
@@ -42,7 +42,7 @@ export function evaluatePolicy(input) {
     });
     const requiresEscalation = input.refundAmount > REFUND_POLICY.maxAmountWithoutReview;
     checks.push({
-        rule: "amount_cap",
+        rule: "human_review_limit",
         passed: !requiresEscalation,
         reason: requiresEscalation
             ? `Refund exceeds $${REFUND_POLICY.maxAmountWithoutReview} and requires human review.`

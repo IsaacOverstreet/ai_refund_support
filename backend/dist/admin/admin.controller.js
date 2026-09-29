@@ -11,12 +11,13 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { Body, Controller, Get, Param, Patch, Query } from "@nestjs/common";
-import { IsIn, IsString, MinLength } from "class-validator";
+import { IsIn, IsOptional, IsString, MinLength } from "class-validator";
 import { AdminService } from "./admin.service.js";
 class RequestFilterDto {
     status;
 }
 __decorate([
+    IsOptional(),
     IsIn(["APPROVED", "DENIED", "ESCALATED"]),
     __metadata("design:type", String)
 ], RequestFilterDto.prototype, "status", void 0);

@@ -3,10 +3,18 @@ type ConversationMessage = {
     role: "user" | "assistant";
     content: string;
 };
-type AiDecision = {
+type IdentifyProductResult = {
+    productName: string | null;
+};
+type InjectionCheckResult = {
+    suspicious: boolean;
+    reasoning: string;
+};
+export type AiDecision = {
     decision: "approved" | "denied" | "escalated";
     reasoning: string;
     reply: string;
+    productName: string | null;
 };
 export declare class AiService {
     private readonly logger;
@@ -16,10 +24,24 @@ export declare class AiService {
         suspicious: boolean;
         matched?: string;
     };
+    checkPromptInjection(customerMessage: string): Promise<InjectionCheckResult>;
+    identifyProduct(args: {
+        customerMessage: string;
+        conversationHistory: ConversationMessage[];
+        order: {
+            orderNumber: string;
+            items: {
+                productName: string;
+                quantity: number;
+                isFinalSale: boolean;
+            }[];
+        };
+    }): Promise<IdentifyProductResult>;
     evaluate(args: {
         customerMessage: string;
         conversationHistory: ConversationMessage[];
         refundAmount: number;
+        productName: string;
         order: {
             orderNumber: string;
             totalAmount: number;
