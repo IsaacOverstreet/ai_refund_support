@@ -10,6 +10,10 @@ type InjectionCheckResult = {
     suspicious: boolean;
     reasoning: string;
 };
+type RefundIntentResult = {
+    hasRefundIntent: boolean;
+    reasoning: string;
+};
 export type AiDecision = {
     decision: "approved" | "denied" | "escalated";
     reasoning: string;
@@ -24,6 +28,7 @@ export declare class AiService {
         suspicious: boolean;
         matched?: string;
     };
+    checkRefundIntent(customerMessage: string): Promise<RefundIntentResult>;
     checkPromptInjection(customerMessage: string): Promise<InjectionCheckResult>;
     identifyProduct(args: {
         customerMessage: string;

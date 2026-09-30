@@ -31,13 +31,13 @@ export declare class CustomersService {
             })[];
         } & {
             id: string;
+            status: import("../generated/prisma/enums.js").OrderStatus;
+            createdAt: Date;
             orderNumber: string;
             customerId: string;
-            status: import("../generated/prisma/enums.js").OrderStatus;
             totalAmount: import("@prisma/client-runtime-utils").Decimal;
             orderedAt: Date;
             deliveredAt: Date | null;
-            createdAt: Date;
             updatedAt: Date;
         })[];
     } & {

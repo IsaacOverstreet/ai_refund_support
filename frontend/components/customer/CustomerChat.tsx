@@ -114,9 +114,7 @@ export default function CustomerChat() {
     try {
       setChatError(null);
       setChatEnded(false);
-
       setSelectedOrder(order);
-
       setMessages([]);
       setMessage("");
       setSessionId(null);
@@ -178,7 +176,7 @@ export default function CustomerChat() {
   };
 
   return (
-    <div className="min-h-screen bg-white font-sans text-gray-800">
+    <div className="min-h-screen bg-white font-sans text-gray-800 ">
       <main className="max-w-7xl mx-auto px-4 py-6 flex flex-col lg:flex-row gap-8">
         {/* Sidebar */}
         <aside className="w-full lg:w-1/4 shrink-0">

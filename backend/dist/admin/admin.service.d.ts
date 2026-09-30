@@ -35,48 +35,48 @@ export declare class AdminService {
             })[];
         } & {
             id: string;
+            status: import("../generated/prisma/enums.js").OrderStatus;
+            createdAt: Date;
             orderNumber: string;
             customerId: string;
-            status: import("../generated/prisma/enums.js").OrderStatus;
             totalAmount: import("@prisma/client-runtime-utils").Decimal;
             orderedAt: Date;
             deliveredAt: Date | null;
-            createdAt: Date;
             updatedAt: Date;
         };
         decision: {
             id: string;
-            status: import("../generated/prisma/enums.js").RefundStatus;
-            createdAt: Date;
             refundRequestId: string;
+            status: import("../generated/prisma/enums.js").RefundStatus;
             source: import("../generated/prisma/enums.js").DecisionSource;
             reason: string;
             confidence: number | null;
+            createdAt: Date;
         } | null;
         chatMessages: {
             id: string;
             metadata: import("@prisma/client/runtime/client").JsonValue | null;
-            createdAt: Date;
             refundRequestId: string;
+            createdAt: Date;
             role: string;
             content: string;
         }[];
         auditLogs: {
             id: string;
-            createdAt: Date;
             refundRequestId: string;
+            createdAt: Date;
             action: string;
             details: import("@prisma/client/runtime/client").JsonValue | null;
         }[];
     } & {
         id: string;
-        customerId: string;
-        createdAt: Date;
-        updatedAt: Date;
         reason: import("../generated/prisma/enums.js").RefundReason;
-        orderId: string;
+        createdAt: Date;
+        customerId: string;
+        updatedAt: Date;
         description: string;
         amount: import("@prisma/client-runtime-utils").Decimal;
+        orderId: string;
     })[]>;
     getRequestDetail(id: string): Promise<({
         customer: {
@@ -107,56 +107,56 @@ export declare class AdminService {
             })[];
         } & {
             id: string;
+            status: import("../generated/prisma/enums.js").OrderStatus;
+            createdAt: Date;
             orderNumber: string;
             customerId: string;
-            status: import("../generated/prisma/enums.js").OrderStatus;
             totalAmount: import("@prisma/client-runtime-utils").Decimal;
             orderedAt: Date;
             deliveredAt: Date | null;
-            createdAt: Date;
             updatedAt: Date;
         };
         decision: {
             id: string;
-            status: import("../generated/prisma/enums.js").RefundStatus;
-            createdAt: Date;
             refundRequestId: string;
+            status: import("../generated/prisma/enums.js").RefundStatus;
             source: import("../generated/prisma/enums.js").DecisionSource;
             reason: string;
             confidence: number | null;
+            createdAt: Date;
         } | null;
         chatMessages: {
             id: string;
             metadata: import("@prisma/client/runtime/client").JsonValue | null;
-            createdAt: Date;
             refundRequestId: string;
+            createdAt: Date;
             role: string;
             content: string;
         }[];
         auditLogs: {
             id: string;
-            createdAt: Date;
             refundRequestId: string;
+            createdAt: Date;
             action: string;
             details: import("@prisma/client/runtime/client").JsonValue | null;
         }[];
     } & {
         id: string;
-        customerId: string;
-        createdAt: Date;
-        updatedAt: Date;
         reason: import("../generated/prisma/enums.js").RefundReason;
-        orderId: string;
+        createdAt: Date;
+        customerId: string;
+        updatedAt: Date;
         description: string;
         amount: import("@prisma/client-runtime-utils").Decimal;
+        orderId: string;
     }) | null>;
     overrideDecision(id: string, status: "APPROVED" | "DENIED" | "ESCALATED", note: string): Promise<{
         id: string;
-        status: import("../generated/prisma/enums.js").RefundStatus;
-        createdAt: Date;
         refundRequestId: string;
+        status: import("../generated/prisma/enums.js").RefundStatus;
         source: import("../generated/prisma/enums.js").DecisionSource;
         reason: string;
         confidence: number | null;
+        createdAt: Date;
     }>;
 }

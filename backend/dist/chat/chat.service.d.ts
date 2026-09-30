@@ -4,26 +4,27 @@ export declare class ChatService {
     private readonly prisma;
     private readonly ai;
     constructor(prisma: PrismaService, ai: AiService);
+    cleanupAbandonedSessions(): Promise<void>;
     startSession(orderId: string): Promise<{
         sessionId: string;
         orderId: string;
         messages: {
             id: string;
-            metadata: import("@prisma/client/runtime/client").JsonValue | null;
             createdAt: Date;
-            refundRequestId: string;
             role: string;
             content: string;
+            metadata: import("@prisma/client/runtime/client").JsonValue | null;
+            refundRequestId: string;
         }[];
     }>;
     sendMessage(sessionId: string, userMessage: string): Promise<{
         message: {
             id: string;
-            metadata: import("@prisma/client/runtime/client").JsonValue | null;
             createdAt: Date;
-            refundRequestId: string;
             role: string;
             content: string;
+            metadata: import("@prisma/client/runtime/client").JsonValue | null;
+            refundRequestId: string;
         };
         decision: null;
         reasoning: null;
@@ -32,11 +33,11 @@ export declare class ChatService {
     } | {
         message: {
             id: string;
-            metadata: import("@prisma/client/runtime/client").JsonValue | null;
             createdAt: Date;
-            refundRequestId: string;
             role: string;
             content: string;
+            metadata: import("@prisma/client/runtime/client").JsonValue | null;
+            refundRequestId: string;
         };
         decision: import("../generated/prisma/enums.js").RefundStatus;
         reasoning: string;
@@ -44,14 +45,29 @@ export declare class ChatService {
         injectionSuspected: boolean;
     }>;
     listSessions(): Promise<({
+        chatMessages: {
+            id: string;
+            createdAt: Date;
+            role: string;
+            content: string;
+            metadata: import("@prisma/client/runtime/client").JsonValue | null;
+            refundRequestId: string;
+        }[];
+        customer: {
+            id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            name: string;
+            email: string;
+        };
         order: {
             items: ({
                 product: {
-                    name: string;
                     id: string;
+                    description: string | null;
                     createdAt: Date;
                     updatedAt: Date;
-                    description: string | null;
+                    name: string;
                     sku: string;
                     price: import("@prisma/client-runtime-utils").Decimal;
                 };
@@ -65,39 +81,24 @@ export declare class ChatService {
             })[];
         } & {
             id: string;
-            orderNumber: string;
+            createdAt: Date;
+            updatedAt: Date;
             customerId: string;
+            orderNumber: string;
             status: import("../generated/prisma/enums.js").OrderStatus;
             totalAmount: import("@prisma/client-runtime-utils").Decimal;
             orderedAt: Date;
             deliveredAt: Date | null;
-            createdAt: Date;
-            updatedAt: Date;
         };
         decision: {
             id: string;
-            status: import("../generated/prisma/enums.js").RefundStatus;
+            reason: string;
             createdAt: Date;
+            status: import("../generated/prisma/enums.js").RefundStatus;
             refundRequestId: string;
             source: import("../generated/prisma/enums.js").DecisionSource;
-            reason: string;
             confidence: number | null;
         } | null;
-        customer: {
-            name: string;
-            id: string;
-            createdAt: Date;
-            updatedAt: Date;
-            email: string;
-        };
-        chatMessages: {
-            id: string;
-            metadata: import("@prisma/client/runtime/client").JsonValue | null;
-            createdAt: Date;
-            refundRequestId: string;
-            role: string;
-            content: string;
-        }[];
         auditLogs: {
             id: string;
             createdAt: Date;
@@ -107,12 +108,12 @@ export declare class ChatService {
         }[];
     } & {
         id: string;
-        customerId: string;
-        createdAt: Date;
-        updatedAt: Date;
         reason: import("../generated/prisma/enums.js").RefundReason;
-        orderId: string;
         description: string;
         amount: import("@prisma/client-runtime-utils").Decimal;
+        createdAt: Date;
+        updatedAt: Date;
+        customerId: string;
+        orderId: string;
     })[]>;
 }

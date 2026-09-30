@@ -11,20 +11,28 @@ import { BadRequestException, Injectable, NotFoundException, } from "@nestjs/com
 import { PrismaService } from "../prisma/prisma.service.js";
 import { AiService } from "../ai/ai.service.js";
 import { evaluatePolicy } from "../policy/refundPolicy.js";
-const HARDCODED_INTRO = (customerName, orderNumber, totalAmount) => `Hi ${customerName}! I'm your WORKNOON refund assistant.\n\n` +
-    `I can see your order ${orderNumber} for a total of $${totalAmount.toFixed(2)}.\n\n` +
-    `To get started, could you tell me what went wrong? For example:\n` +
-    `• The item arrived damaged\n` +
-    `• I received the wrong item\n` +
-    `• The item is faulty\n` +
-    `• I never received it\n\n` +
-    `Just describe the issue in your own words.`;
+import { Cron } from "@nestjs/schedule";
+import { HARDCODED_INTRO } from "./chat.constants.js";
 let ChatService = class ChatService {
     prisma;
     ai;
     constructor(prisma, ai) {
         this.prisma = prisma;
         this.ai = ai;
+    }
+    async cleanupAbandonedSessions() {
+        const twoMinutesAgo = new Date(Date.now() - 2 * 60 * 1000);
+        const result = await this.prisma.refundRequest.deleteMany({
+            where: {
+                decision: null,
+                createdAt: {
+                    lt: twoMinutesAgo,
+                },
+            },
+        });
+        if (result.count > 0) {
+            console.log(`Cleaned up ${result.count} abandoned refund session(s).`);
+        }
     }
     async startSession(orderId) {
         const order = await this.prisma.order.findUnique({
@@ -36,26 +44,10 @@ let ChatService = class ChatService {
                         product: true,
                     },
                 },
-                refundRequests: {
-                    where: { decision: null },
-                    include: {
-                        chatMessages: {
-                            orderBy: { createdAt: "asc" },
-                        },
-                    },
-                },
             },
         });
         if (!order) {
             throw new NotFoundException("Order not found");
-        }
-        const existingRequest = order.refundRequests[0];
-        if (existingRequest) {
-            return {
-                sessionId: existingRequest.id,
-                orderId: order.id,
-                messages: existingRequest.chatMessages,
-            };
         }
         const request = await this.prisma.refundRequest.create({
             data: {
@@ -166,6 +158,29 @@ let ChatService = class ChatService {
                 injectionSuspected: injection.suspicious,
             };
         }
+        const refundIntent = await this.ai.checkRefundIntent(userMessage);
+        if (!refundIntent.hasRefundIntent) {
+            const assistantMessage = await this.prisma.chatMessage.create({
+                data: {
+                    refundRequestId: sessionId,
+                    role: "assistant",
+                    content: `I found your ${item.product.name}. ` +
+                        `Could you please tell me what issue you're having with it?`,
+                    metadata: {
+                        type: "clarification",
+                        productName: item.product.name,
+                        injectionSuspected: injection.suspicious,
+                    },
+                },
+            });
+            return {
+                message: assistantMessage,
+                decision: null,
+                reasoning: null,
+                policyChecks: [],
+                injectionSuspected: injection.suspicious,
+            };
+        }
         const itemRefundAmount = Number(item.unitPrice) * item.quantity;
         const policy = evaluatePolicy({
             refundAmount: itemRefundAmount,
@@ -173,6 +188,7 @@ let ChatService = class ChatService {
             orderedAt: request.order.orderedAt,
             isFinalSale: item.isFinalSale,
         });
+        console.log("🚀 ~ ChatService ~ sendMessage ~ policy:", policy);
         const aiResult = await this.ai.evaluate({
             customerMessage: userMessage,
             conversationHistory: [
@@ -202,6 +218,7 @@ let ChatService = class ChatService {
             hardFail: policy.hardFail,
             injectionSuspected: injection.suspicious,
         });
+        console.log("🚀 ~ ChatService ~ sendMessage ~ aiResult:", aiResult);
         let finalDecision = aiResult.decision.toUpperCase();
         let decisionSource = "AI";
         let finalReply = aiResult.reply;
@@ -232,6 +249,15 @@ let ChatService = class ChatService {
                 `Your refund request for ${item.product.name} requires human review. ` +
                     `A support representative will review the request and determine the next step.`;
         }
+        console.log("FINAL REFUND DECISION:", {
+            decision: finalDecision,
+            source: decisionSource,
+            reasoning: finalReasoning,
+            productName: item.product.name,
+            refundAmount: itemRefundAmount,
+            injectionSuspected: injection.suspicious,
+            requiresEscalation: policy.requiresEscalation,
+        });
         const assistantMessage = await this.prisma.chatMessage.create({
             data: {
                 refundRequestId: sessionId,
@@ -308,6 +334,12 @@ let ChatService = class ChatService {
         });
     }
 };
+__decorate([
+    Cron("*/10 * * * * *"),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], ChatService.prototype, "cleanupAbandonedSessions", null);
 ChatService = __decorate([
     Injectable(),
     __metadata("design:paramtypes", [PrismaService,
